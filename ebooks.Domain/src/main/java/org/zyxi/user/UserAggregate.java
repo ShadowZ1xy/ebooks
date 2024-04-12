@@ -67,7 +67,7 @@ public class UserAggregate extends Aggregate<UserAggregate, UserId> {
                          LocalDateTime creationDateTime,
                          LocalDateTime lastUpdateDateTime,
                          UserId userId) {
-        
+
         super(id, creationDateTime, lastUpdateDateTime);
         this.userId = userId;
     }

@@ -14,7 +14,7 @@ public class UserController {
 
     private final Pipeline pipeline;
 
-    @PostMapping
+    @PostMapping("/registration")
     public ResponseEntity<Voidy> createUser(CreateUserCommand command) {
         pipeline.send(command);
         return ResponseEntity.ok().build();
