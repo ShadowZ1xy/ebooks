@@ -1,19 +1,19 @@
 package org.zyxi.user.entity;
 
-import lombok.Builder;
+import jakarta.persistence.*;
+import lombok.Getter;
 import org.zyxi.user.value_objects.Role;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.UUID;
 
+@Getter
 @Entity
-@Builder
 @Table(name = "users")
 public class UserEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(name = "creation_date_time")
     private LocalDateTime creationDateTime;
@@ -22,20 +22,45 @@ public class UserEntity {
 
     @Column(name = "user_id")
     private UUID userId;
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     private String username;
     @Column(name = "password")
     private String password;
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
     @Column(name = "first_name")
     private String firstName;
     @Column(name = "last_name")
     private String lastName;
 
-    @ElementCollection(targetClass = Role.class)
+    @ElementCollection(fetch = FetchType.EAGER, targetClass = Role.class)
     @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "user_roles")
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_entity_id"))
     @Column(name = "role")
     private Collection<Role> roles;
+
+    protected UserEntity() {
+    }
+
+    public UserEntity(Long id,
+                      LocalDateTime creationDateTime,
+                      LocalDateTime lastUpdateDateTime,
+                      UUID userId,
+                      String username,
+                      String password,
+                      String email,
+                      String firstName,
+                      String lastName,
+                      Collection<Role> roles) {
+        this.id = id;
+        this.creationDateTime = creationDateTime;
+        this.lastUpdateDateTime = lastUpdateDateTime;
+        this.userId = userId;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.roles = roles;
+    }
 }

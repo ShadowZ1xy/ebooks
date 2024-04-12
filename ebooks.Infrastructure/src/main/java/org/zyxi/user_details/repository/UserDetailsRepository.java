@@ -1,7 +1,7 @@
 package org.zyxi.user_details.repository;
 
-import org.springframework.security.core.userdetails.UserDetails;
+import org.zyxi.user_details.model.CurrentUser;
 
 public interface UserDetailsRepository {
-    UserDetails loadUserByUsername(String username);
+    CurrentUser findByUsername(String username);
 }

@@ -8,12 +8,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.zyxi.api.common.service.JWTUtils;
-import org.zyxi.user_details.service.UserDetailsProviderService;
+import org.zyxi.user_details.model.CurrentUser;
+import org.zyxi.user_details.service.JWTUtils;
+import org.zyxi.user_details.service.CurrentUserProviderService;
 
 import java.io.IOException;
 
@@ -22,7 +22,7 @@ import java.io.IOException;
 public class JWTAuthFilter extends OncePerRequestFilter {
 
     private final JWTUtils jwtUtils;
-    private final UserDetailsProviderService userDetailsProviderService;
+    private final CurrentUserProviderService currentUserProviderService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -42,12 +42,12 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         username = jwtUtils.extractUsername(jwtToken);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsProviderService.loadUserByUsername(username);
+            CurrentUser currentUser = currentUserProviderService.loadUserByUsername(username);
 
-            if (jwtUtils.isTokenValid(jwtToken, userDetails)) {
+            if (jwtUtils.isTokenValid(jwtToken, currentUser)) {
                 SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
                 UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities()
+                        currentUser, null, currentUser.getAuthorities()
                 );
                 token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 securityContext.setAuthentication(token);

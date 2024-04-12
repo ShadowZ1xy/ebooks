@@ -5,8 +5,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.zyxi.user.value_objects.Role;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
+
 import java.util.Collection;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Entity
@@ -14,19 +16,23 @@ import java.util.stream.Collectors;
 public class UserDetailsEntity implements UserDetails {
 
     @Id
+    @Column(name = "id", updatable = false, insertable = false)
     private Long id;
 
-    @Column(name = "username")
+    @Column(name = "user_id", updatable = false, insertable = false)
+    private UUID userId;
+
+    @Column(name = "username", updatable = false, insertable = false)
     private String username;
 
-    @Column(name = "password")
+    @Column(name = "password", updatable = false, insertable = false)
     private String password;
 
-    @ElementCollection(targetClass = Role.class)
+    @ElementCollection(fetch = FetchType.EAGER, targetClass = Role.class)
     @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "user_roles")
-    @Column(name = "role")
-    Collection<Role> roles;
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_entity_id"))
+    @Column(name = "role", updatable = false, insertable = false)
+    private Collection<Role> roles;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -63,5 +69,20 @@ public class UserDetailsEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public Collection<Role> getRoles() {
+        return roles;
+    }
+
+    protected UserDetailsEntity() {
     }
 }

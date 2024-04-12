@@ -1,5 +1,7 @@
 package org.zyxi.user.repository;
 
+import org.zyxi.user.value_objects.EmailAddress;
+import org.zyxi.user.value_objects.Username;
 import org.zyxi.user.UserAggregate;
 import org.zyxi.user.UserId;
 
@@ -8,14 +10,10 @@ public interface UserRepository {
 
     void save(UserAggregate user);
 
-    UserAggregate findById(UserId userId);
+    boolean existsByUsername(Username username);
 
-    default UserAggregate retrieveById(UserId userId) {
-        UserAggregate user = findById(userId);
-        if (user == null) {
-            throw new IllegalArgumentException("can't find user");
-        }
-        return user;
-    }
+    boolean existsByEmail(EmailAddress email);
+
+    UserAggregate retrieve(UserId userId);
 
 }

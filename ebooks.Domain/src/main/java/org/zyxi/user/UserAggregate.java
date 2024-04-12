@@ -1,19 +1,16 @@
 package org.zyxi.user;
 
 import org.zyxi.common.Aggregate;
-import org.zyxi.common.value_objects.EmailAddress;
-import org.zyxi.common.value_objects.Name;
-import org.zyxi.common.value_objects.Username;
+import org.zyxi.user.value_objects.EmailAddress;
+import org.zyxi.user.value_objects.Name;
+import org.zyxi.user.value_objects.Username;
 import org.zyxi.user.value_objects.Role;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.UUID;
+import java.util.*;
 
 public class UserAggregate extends Aggregate<UserAggregate, UserId> {
 
-    private UserId userId;
     private Username username;
     private String password;
     private EmailAddress email;
@@ -26,21 +23,44 @@ public class UserAggregate extends Aggregate<UserAggregate, UserId> {
                          EmailAddress email,
                          Name firstName,
                          Name lastName) {
-        super();
+        super(new UserId(UUID.randomUUID()));
         validateCreation(username, password, email, firstName, lastName);
-        this.userId = new UserId(UUID.randomUUID());
         this.username = username;
         this.password = password;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.roles = new ArrayList<>();
+        this.roles = new ArrayList<>(List.of(Role.ROLE_USER));
+    }
+
+    public void addRole(Role role) {
+        if (role == null) {
+            throw new RuntimeException("role is null");
+        }
+        if (roles.contains(role)) {
+            throw new RuntimeException("role already assigned");
+        }
+        roles.add(role);
+    }
+
+    public void removeRole(Role role) {
+        if (role == null) {
+            throw new RuntimeException("role is null");
+        }
+        if (!roles.contains(role)) {
+            throw new RuntimeException("role is not assigned");
+        }
+        roles.remove(role);
+    }
+
+    public void changeName(Name name) {
+        if (name == null) {
+            throw new RuntimeException("name is null");
+        }
+        this.firstName = name;
     }
 
     private void validateCreation(Username username, String password, EmailAddress email, Name firstName, Name lastName) {
-        if (userId == null) {
-            throw new IllegalArgumentException("user creation failed, userId missed");
-        }
         if (username == null) {
             throw new IllegalArgumentException("user creation failed, username missed");
         }
@@ -60,15 +80,49 @@ public class UserAggregate extends Aggregate<UserAggregate, UserId> {
 
     @Override
     public UserId getId() {
-        return this.userId;
+        return super.getId();
+    }
+
+    public Username getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public EmailAddress getEmail() {
+        return email;
+    }
+
+    public Name getFirstName() {
+        return firstName;
+    }
+
+    public Name getLastName() {
+        return lastName;
+    }
+
+    public Collection<Role> getRoles() {
+        return roles;
     }
 
     public UserAggregate(Long id,
                          LocalDateTime creationDateTime,
                          LocalDateTime lastUpdateDateTime,
-                         UserId userId) {
-
-        super(id, creationDateTime, lastUpdateDateTime);
-        this.userId = userId;
+                         UserId userId,
+                         Username username,
+                         String password,
+                         EmailAddress email,
+                         Name firstName,
+                         Name lastName,
+                         Collection<Role> roles) {
+        super(id, userId, creationDateTime, lastUpdateDateTime);
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.roles = roles;
     }
 }

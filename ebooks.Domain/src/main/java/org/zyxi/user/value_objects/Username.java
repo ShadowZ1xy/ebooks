@@ -1,4 +1,4 @@
-package org.zyxi.common.value_objects;
+package org.zyxi.user.value_objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jmolecules.ddd.types.ValueObject;
@@ -10,8 +10,8 @@ public class Username implements ValueObject {
     private String value;
 
     public Username(String value) {
-        boolean isValidEmail = StringUtils.isBlank(value);
-        if (isValidEmail) {
+        boolean isBlankValue = StringUtils.isBlank(value);
+        if (isBlankValue) {
             throw new IllegalArgumentException("username can't be empty");
         }
         if (value.length() < 4) {

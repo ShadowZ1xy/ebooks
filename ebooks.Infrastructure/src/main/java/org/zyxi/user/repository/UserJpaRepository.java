@@ -5,8 +5,14 @@ import org.springframework.stereotype.Repository;
 import org.zyxi.user.entity.UserEntity;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
-    Optional<UserEntity> getByUsername(String username);
+
+    boolean existsByUsername(String username);
+
+    boolean existsByEmail(String email);
+
+    Optional<UserEntity> findByUserId(UUID resourceId);
 }

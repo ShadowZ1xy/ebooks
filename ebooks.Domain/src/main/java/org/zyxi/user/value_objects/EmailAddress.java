@@ -1,4 +1,4 @@
-package org.zyxi.common.value_objects;
+package org.zyxi.user.value_objects;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -8,14 +8,14 @@ import org.jmolecules.ddd.types.ValueObject;
 
 public class EmailAddress implements ValueObject {
 
-    private static final Pattern EMAIL_PATTERN = Pattern.compile(
-            "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+            Pattern.compile("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", Pattern.CASE_INSENSITIVE);
 
     private String value;
 
     public EmailAddress(String value) {
         boolean isValidEmail = isValidEmail(value);
-        if (isValidEmail) {
+        if (!isValidEmail) {
             throw new IllegalArgumentException("email validation failed");
         }
         this.value = value;
@@ -29,7 +29,7 @@ public class EmailAddress implements ValueObject {
         if (email == null) {
             return false;
         }
-        Matcher matcher = EMAIL_PATTERN.matcher(email);
+        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(email);
         return matcher.matches();
     }
 
