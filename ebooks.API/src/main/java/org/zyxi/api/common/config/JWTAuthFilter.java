@@ -11,9 +11,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.zyxi.user_details.model.CurrentUser;
-import org.zyxi.user_details.service.JWTUtils;
-import org.zyxi.user_details.service.CurrentUserProviderService;
+import org.infra.user_details.model.BaseUser;
+import org.application.user_details.service.JWTUtils;
+import org.application.user_details.service.UserProviderService;
 
 import java.io.IOException;
 
@@ -22,7 +22,7 @@ import java.io.IOException;
 public class JWTAuthFilter extends OncePerRequestFilter {
 
     private final JWTUtils jwtUtils;
-    private final CurrentUserProviderService currentUserProviderService;
+    private final UserProviderService userProviderService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -42,12 +42,12 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         username = jwtUtils.extractUsername(jwtToken);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            CurrentUser currentUser = currentUserProviderService.loadUserByUsername(username);
+            BaseUser baseUser = userProviderService.loadUserByUsername(username);
 
-            if (jwtUtils.isTokenValid(jwtToken, currentUser)) {
+            if (jwtUtils.isTokenValid(jwtToken, baseUser)) {
                 SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
                 UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                        currentUser, null, currentUser.getAuthorities()
+                        baseUser, null, baseUser.getAuthorities()
                 );
                 token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 securityContext.setAuthentication(token);

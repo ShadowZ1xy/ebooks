@@ -14,7 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.zyxi.user_details.service.CurrentUserProviderService;
+import org.application.user_details.service.UserProviderService;
 
 
 @Configuration
@@ -24,7 +24,7 @@ import org.zyxi.user_details.service.CurrentUserProviderService;
 public class SecurityConfig {
 
     private final JWTAuthFilter jwtAuthenticationFilter;
-    private final CurrentUserProviderService currentUserProviderService;
+    private final UserProviderService userProviderService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -37,7 +37,7 @@ public class SecurityConfig {
                         .anyRequest()
                         .authenticated()
                 )
-                .userDetailsService(currentUserProviderService)
+                .userDetailsService(userProviderService)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

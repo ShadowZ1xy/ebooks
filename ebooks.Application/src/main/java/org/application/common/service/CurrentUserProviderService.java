@@ -1,4 +1,4 @@
-package org.zyxi.api.common.service;
+package org.application.common.service;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -6,16 +6,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.infra.user_details.model.BaseUser;
 
-import java.util.UUID;
-
 @Service
-public class SecurityService {
+public class CurrentUserProviderService {
 
-    public boolean IsSelf(UUID userId) {
+    public BaseUser get() {
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
-        BaseUser baseUser = (BaseUser) authentication.getPrincipal();
-        return baseUser.getUserId().resourceId().equals(userId);
+        return (BaseUser) authentication.getPrincipal();
     }
 
 }
