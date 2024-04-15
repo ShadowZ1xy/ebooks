@@ -11,9 +11,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.infra.user_details.model.BaseUser;
-import org.application.user_details.service.JWTUtils;
-import org.application.user_details.service.UserProviderService;
+import org.zyxi.application.user_details.service.JWTUtils;
+import org.zyxi.application.user_details.service.UserProviderService;
+import org.zyxi.infra.user_details.model.BaseUser;
 
 import java.io.IOException;
 
@@ -56,4 +56,5 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
+
 }

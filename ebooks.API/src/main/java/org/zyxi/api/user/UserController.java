@@ -6,13 +6,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.application.user.pipeline.add_role.AddRoleToUserCommand;
-import org.application.user.pipeline.authenticate.AuthenticateUserCommand;
-import org.application.user.pipeline.authenticate.AuthenticateUserCommandResponse;
-import org.application.user.pipeline.change_name.ChangeNameCommand;
-import org.application.user.pipeline.create.CreateUserCommand;
-import org.application.user.pipeline.create.CreateUserCommandResponse;
-import org.application.user.pipeline.remove_role.RemoveRoleFromUserCommand;
+import org.zyxi.application.user.pipeline.add_role.AddRoleToUserCommand;
+import org.zyxi.application.user.pipeline.authenticate.AuthenticateUserCommand;
+import org.zyxi.application.user.pipeline.authenticate.AuthenticateUserCommandResponse;
+import org.zyxi.application.user.pipeline.change_name.ChangeNameCommand;
+import org.zyxi.application.user.pipeline.create.CreateUserCommand;
+import org.zyxi.application.user.pipeline.create.CreateUserCommandResponse;
+import org.zyxi.application.user.pipeline.remove_role.RemoveRoleFromUserCommand;
 
 @RestController
 @AllArgsConstructor
@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @PatchMapping("/change-name")
-    @PreAuthorize("hasRole('SUPER_ADMIN') OR @securityService.IsSelf(#command.userId())")
+    @PreAuthorize("hasRole('ADMIN') OR @securityService.IsSelf(#command.userId())")
     public ResponseEntity<Voidy> changeName(@RequestBody ChangeNameCommand command) {
         pipeline.send(command);
         return ResponseEntity.ok().build();
